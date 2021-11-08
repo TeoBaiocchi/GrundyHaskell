@@ -1,3 +1,5 @@
+import Control.Exception
+
 main :: IO ()
 main = do
     putStrLn "Bienvenido al juego del Grundy\nIngrese la cantidad de asteriscos para la linea inicial (mayor a 2): "
@@ -42,8 +44,10 @@ ingresarFila xs = do
 ingresarTupla :: [Int] -> Int -> IO (Int, Int)
 ingresarTupla (x:xs) fila = do
     input1 <- getLine
-    n <- stringTup input1
-    if (fst n) <= 0 || (snd n) <= 0 || ((fst n)+(snd n))/=((x:xs)!!fila) || (fst n) == (snd n) then inputMaloTupla (x:xs) fila else (return n)
+    n <- try (stringTup input1)
+    case n of
+        Left (_ :: SomeException) -> inputMaloTupla (x:xs) fila
+        Right val -> if (fst val) <= 0 || (snd val) <= 0 || ((fst val)+(snd val))/=((x:xs)!!fila) || (fst val) == (snd val) then inputMaloTupla (x:xs) fila else (return val)
 
 -- stringTup :: String -> IO (Int, Int)
 -- stringTup s = do
