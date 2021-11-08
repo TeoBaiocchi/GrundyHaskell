@@ -1,4 +1,4 @@
-import Control.Exception
+﻿import Control.Exception
 
 main :: IO ()
 main = do
