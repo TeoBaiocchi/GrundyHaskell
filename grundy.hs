@@ -19,7 +19,7 @@ juego (x:xs) jugador = do
     let lista = agregarSegunFila dividir (x:xs) (input1-1)
     if (hayGanador lista == False) then (let player = (mod jugador 2)+1 in (juego lista player)) else imprimirGanador jugador -- creo que tendria que ser asi la recursion y comprobacion de victoria
 
-inputMaloLineaInicio = do
+inputMaloInicio = do
     putStrLn "Input invalido"
     validarInputInicial
 
@@ -34,12 +34,18 @@ inputMaloTupla (x:xs) fila = do
 validarInputInicial :: IO Int
 validarInputInicial = do
     input1 <- getLine
-    if (read input1 :: Int) <= 2 then inputMaloLineaInicio else (return ((read input1) :: Int))
+    n <- try (evaluate (read input1 :: Int))
+    case n of
+        Left (_ :: SomeException) -> inputMaloInicio
+        Right val -> if val <= 2 then inputMaloInicio else (return val)
 
 ingresarFila :: [Int] -> IO Int    
 ingresarFila xs = do
     input1 <- getLine
-    if (read input1 :: Int) <= 0 || (read input1 :: Int) > length(xs) || (xs !! ((read input1 :: Int)-1))<=2 then inputMaloFila xs else (return ((read input1) :: Int))
+    n <- try (evaluate (read input1 :: Int))
+    case n of
+        Left (_ :: SomeException) -> inputMaloFila xs
+        Right val -> if val <= 0 || val > length(xs) || (xs !! (val-1))<=2 then inputMaloFila xs else (return val)
     
 ingresarTupla :: [Int] -> Int -> IO (Int, Int)
 ingresarTupla (x:xs) fila = do
