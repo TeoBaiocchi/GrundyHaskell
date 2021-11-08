@@ -17,21 +17,33 @@ juego (x:xs) jugador = do
     let lista = agregarSegunFila dividir (x:xs) (input1-1)
     if (hayGanador lista == False) then (let player = (mod jugador 2)+1 in (juego lista player)) else imprimirGanador jugador -- creo que tendria que ser asi la recursion y comprobacion de victoria
 
+inputMaloLineaInicio = do
+    putStrLn "Input invalido"
+    validarInputInicial
+
+inputMaloFila xs = do
+    putStrLn "Input Invalido"
+    ingresarFila xs
+
+inputMaloTupla (x:xs) fila = do
+    putStrLn "Input Invalido"
+    ingresarTupla (x:xs) fila
+
 validarInputInicial :: IO Int
 validarInputInicial = do
     input1 <- getLine
-    if (read input1 :: Int) <= 2 then validarInputInicial else (return ((read input1) :: Int))
+    if (read input1 :: Int) <= 2 then inputMaloLineaInicio else (return ((read input1) :: Int))
 
 ingresarFila :: [Int] -> IO Int    
 ingresarFila xs = do
     input1 <- getLine
-    if (read input1 :: Int) <= 0 || (read input1 :: Int) > length(xs) || (xs !! ((read input1 :: Int)-1))<=2 then ingresarFila xs else (return ((read input1) :: Int))
+    if (read input1 :: Int) <= 0 || (read input1 :: Int) > length(xs) || (xs !! ((read input1 :: Int)-1))<=2 then inputMaloFila xs else (return ((read input1) :: Int))
     
 ingresarTupla :: [Int] -> Int -> IO (Int, Int)
 ingresarTupla (x:xs) fila = do
     input1 <- getLine
     n <- stringTup input1
-    if (fst n) <= 0 || (snd n) <= 0 || ((fst n)+(snd n))/=((x:xs)!!fila) || (fst n) == (snd n) then ingresarTupla (x:xs) fila else (return n)
+    if (fst n) <= 0 || (snd n) <= 0 || ((fst n)+(snd n))/=((x:xs)!!fila) || (fst n) == (snd n) then inputMaloTupla (x:xs) fila else (return n)
 
 -- stringTup :: String -> IO (Int, Int)
 -- stringTup s = do
@@ -41,7 +53,7 @@ ingresarTupla (x:xs) fila = do
 
 stringTup :: String -> IO (Int, Int)
 stringTup (y:x:xs) = do
-    [(n, a:b:s)]  <- return $ (reads (x:xs)  :: [(Int, String)])
+    [(n, a:s)]  <- return $ (reads (x:xs)  :: [(Int, String)])
     [(c, s')] <- return $ (reads s :: [(Int, String)])
     return (n, c)
 
