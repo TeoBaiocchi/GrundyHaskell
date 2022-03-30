@@ -34,25 +34,25 @@ inputMaloTupla (x:xs) fila = do
 validarInputInicial :: IO Int
 validarInputInicial = do
     input1 <- getLine
-    n <- try (evaluate (read input1 :: Int))
+    n <- try (evaluate (read input1 :: Int)) :: IO (Either SomeException Int)
     case n of
-        Left (_ :: SomeException) -> inputMaloInicio
+        Left ex -> inputMaloInicio
         Right val -> if val <= 2 then inputMaloInicio else (return val)
 
 ingresarFila :: [Int] -> IO Int    
 ingresarFila xs = do
     input1 <- getLine
-    n <- try (evaluate (read input1 :: Int))
+    n <- try (evaluate (read input1 :: Int)) :: IO (Either SomeException Int)
     case n of
-        Left (_ :: SomeException) -> inputMaloFila xs
+        Left ex -> inputMaloFila xs
         Right val -> if val <= 0 || val > length(xs) || (xs !! (val-1))<=2 then inputMaloFila xs else (return val)
     
 ingresarTupla :: [Int] -> Int -> IO (Int, Int)
 ingresarTupla (x:xs) fila = do
     input1 <- getLine
-    n <- try (stringTup input1)
+    n <- try (stringTup input1) :: IO (Either SomeException (Int, Int))
     case n of
-        Left (_ :: SomeException) -> inputMaloTupla (x:xs) fila
+        Left ex -> inputMaloTupla (x:xs) fila
         Right val -> if (fst val) <= 0 || (snd val) <= 0 || ((fst val)+(snd val))/=((x:xs)!!fila) || (fst val) == (snd val) then inputMaloTupla (x:xs) fila else (return val)
 
 -- stringTup :: String -> IO (Int, Int)
